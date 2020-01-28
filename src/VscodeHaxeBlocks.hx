@@ -77,8 +77,6 @@ class VscodeHaxeBlocks {
         var code = editor.document.getText();
         var decorations:Array<DecorationOptions> = [];
 
-        untyped console.log('DECORATE ' + editor.document.uri.path);
-
         var parseHaxe = new ParseHaxe(code);
         parseHaxe.parse();
 
