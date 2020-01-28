@@ -1,0 +1,5 @@
+-cp src
+-lib vscode
+-js vscode-haxe-blocks.js
+-D js-source-map
+VscodeHaxeBlocks

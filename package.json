@@ -1,0 +1,38 @@
+{
+    "name": "haxe-blocks",
+    "displayName": "Haxe blocks",
+    "description": "An extension to display function block decorations on haxe code",
+    "publisher": "jeremyfa",
+    "license": "MIT",
+    "version": "0.1.0",
+    "engines": {
+        "vscode": "^1.32.0"
+    },
+    "activationEvents": [
+        "workspaceContains:*.hx",
+        "onCommand:haxe-blocks.reload"
+    ],
+	"contributes": {
+		"colors": [
+			{
+				"id": "haxeBlocks.endOfBlockForeground",
+				"description": "Foreground decoration color for end of block texts",
+				"defaults": {
+					"dark": "#42464f",
+					"light": "#5C626F",
+					"highContrast": "#5C626F"
+				}
+			}
+		]
+	},
+    "bugs": "https://github.com/jeremyfa/vscode-haxe-blocks/issues",
+    "homepage": "https://github.com/jeremyfa/vscode-haxe-blocks/blob/master/README.md",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/jeremyfa/vscode-haxe-blocks.git"
+    },
+    "scripts": {
+        "vscode:prepublish": "haxe build.hxml"
+    },
+    "main": "./vscode-haxe-blocks"
+}
