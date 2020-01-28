@@ -1,18 +1,9 @@
 package;
 
+import vscode.ExtensionContext;
 import vscode.DecorationRangeBehavior;
 import vscode.DecorationOptions;
 import vscode.TextEditorDecorationType;
-import js.html.Console;
-import sys.io.File;
-import haxe.io.Path;
-import haxe.Json;
-import js.node.ChildProcess;
-
-import vscode.ExtensionContext;
-import vscode.StatusBarItem;
-import vscode.FileSystemWatcher;
-import vscode.WindowState;
 
 using StringTools;
 
@@ -135,21 +126,6 @@ class VscodeHaxeBlocks {
         }
 
         editor.setDecorations(decorationType, decorations);
-
-    }
-
-    function getLineFromIndex(code:String, index:Int):Int {
-
-        var line = 0;
-
-        for (i in 0...index) {
-            var c = code.charCodeAt(i);
-            if (c == "\n".code) {
-                line++;
-            }
-        }
-
-        return line;
 
     }
 
