@@ -50,7 +50,7 @@ class ParseHaxe {
 
     var len:Int = 0;
 
-    var c:String = '';
+    var c:Int = 0;
 
     var cc:String = '';
 
@@ -59,6 +59,8 @@ class ParseHaxe {
     var word:String = '';
 
     var openBraces:Int = 0;
+
+    var openParens:Int = 0;
 
     var inClassBraces:Int = -1;
 
@@ -76,32 +78,41 @@ class ParseHaxe {
 
         i = 0;
         len = haxe.length;
-        c = '';
+        c = 0;
         cc = '';
         after = '';
         word = '';
 
         openBraces = 0;
+        openParens = 0;
 
         // Iterate over each character and generate tokens
         //
         while (i < len) {
             updateC();
 
-            if (c == '{') {
+            if (c == '{'.code) {
                 openBraces++;
                 i++;
             }
-            else if (c == '}') {
+            else if (c == '}'.code) {
                 openBraces--;
                 i++;
 
-                if (pendingBlocks.exists(openBraces)) {
-                    var block = pendingBlocks.get(openBraces);
+                if (pendingBlocks.exists(blockKey())) {
+                    var block = pendingBlocks.get(blockKey());
                     block.end = i;
                     blocks.push(block);
-                    pendingBlocks.remove(openBraces);
+                    pendingBlocks.remove(blockKey());
                 }
+            }
+            else if (c == '('.code) {
+                openParens++;
+                i++;
+            }
+            else if (c == ')'.code) {
+                openParens--;
+                i++;
             }
             else {
                 updateCC();
@@ -122,6 +133,12 @@ class ParseHaxe {
             }
 
         }
+
+    }
+
+    inline function blockKey():Int {
+
+        return openBraces * 1000000 + openParens * 1000;
 
     }
 
@@ -158,13 +175,25 @@ class ParseHaxe {
 
             if (word.length > 0) {
                 i += word.length;
-                if (!BLOCK_KEYWORDS.exists(word)) {
-                    pendingBlocks.set(openBraces, {
+                if (isFunction || !BLOCK_KEYWORDS.exists(word)) {
+                    pendingBlocks.set(blockKey(), {
                         name: word,
                         start: index,
                         end: -1,
                         kind: kind
                     });
+
+                    // Skip any generic type parameter
+                    updateAfter();
+                    if (after.ltrim().charAt(0) == '<') {
+                        updateC();
+                        while (c != '>'.code) {
+                            i++;
+                            updateC();
+                        }
+                        i++;
+                    }
+                    
                     break;
                 }
             }
@@ -179,7 +208,7 @@ class ParseHaxe {
 
     inline function updateC() {
 
-        c = cleanedHaxe.charAt(i);
+        c = cleanedHaxe.charCodeAt(i);
 
     }
 
