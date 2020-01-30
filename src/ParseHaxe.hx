@@ -58,6 +58,8 @@ class ParseHaxe {
 
     var after:String = '';
 
+    var originalAfter:String = '';
+
     var word:String = '';
 
     var openBraces:Int = 0;
@@ -104,9 +106,8 @@ class ParseHaxe {
                 if (pendingBlocks.exists(blockKey())) {
                     var block = pendingBlocks.get(blockKey());
                     block.end = i;
-                    updateAfter();
-                    var ltrimmed = after.split('\n')[0];
-                    untyped console.log('ltrimmed: $ltrimmed');
+                    updateOriginalAfter();
+                    var ltrimmed = originalAfter.split('\n')[0];
                     if (ltrimmed != null) {
                         ltrimmed = ltrimmed.ltrim();
                         if (ltrimmed.startsWith('//') || ltrimmed.startsWith('/*')) {
@@ -239,6 +240,15 @@ class ParseHaxe {
 
     }
 
+    inline function updateOriginalAfter(?limit:Int) {
+
+        if (limit != null)
+            originalAfter = haxe.substr(i, limit);
+        else
+            originalAfter = haxe.substring(i);
+
+    }
+
     inline function updateWord() {
 
         var result:String = '';
@@ -287,8 +297,11 @@ class ParseHaxe {
             if (inSingleLineComment) {
                 if (c == "\n") {
                     inSingleLineComment = false;
+                    result.add(c);
                 }
-                result.add(' ');
+                else {
+                    result.add(' ');
+                }
                 i++;
             }
             else if (inMultiLineComment) {
@@ -388,4 +401,3 @@ class ParseHaxe {
     static var RE_STRING = ~/^(?:"(?:[^"\\]*(?:\\.[^"\\]*)*)"|'(?:[^'\\]*(?:\\.[^'\\]*)*)')/;
 
 }
-
