@@ -12,6 +12,8 @@ typedef BlockInfo = {
 
     var kind:BlockKind;
 
+    var endsWithComment:Bool;
+
 }
 
 enum abstract BlockKind(String) {
@@ -102,6 +104,15 @@ class ParseHaxe {
                 if (pendingBlocks.exists(blockKey())) {
                     var block = pendingBlocks.get(blockKey());
                     block.end = i;
+                    updateAfter();
+                    var ltrimmed = after.split('\n')[0];
+                    untyped console.log('ltrimmed: $ltrimmed');
+                    if (ltrimmed != null) {
+                        ltrimmed = ltrimmed.ltrim();
+                        if (ltrimmed.startsWith('//') || ltrimmed.startsWith('/*')) {
+                            block.endsWithComment = true;
+                        }
+                    }
                     blocks.push(block);
                     pendingBlocks.remove(blockKey());
                 }
@@ -180,7 +191,8 @@ class ParseHaxe {
                         name: word,
                         start: index,
                         end: -1,
-                        kind: kind
+                        kind: kind,
+                        endsWithComment: false
                     });
 
                     // Skip any generic type parameter
@@ -193,7 +205,7 @@ class ParseHaxe {
                         }
                         i++;
                     }
-                    
+
                     break;
                 }
             }
@@ -282,7 +294,7 @@ class ParseHaxe {
             else if (inMultiLineComment) {
                 if (cc == '*/') {
                     inMultiLineComment = false;
-                    result.add('  ');
+                    result.add('*/');
                     i += 2;
                 } else {
                     result.add(' ');
@@ -312,12 +324,12 @@ class ParseHaxe {
             }
             else if (cc == '//') {
                 inSingleLineComment = true;
-                result.add('  ');
+                result.add('//');
                 i += 2;
             }
             else if (cc == '/*') {
                 inMultiLineComment = true;
-                result.add('  ');
+                result.add('/*');
                 i += 2;
             }
             else if (cc == '~/') {

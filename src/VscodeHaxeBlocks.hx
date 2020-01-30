@@ -84,6 +84,10 @@ class VscodeHaxeBlocks {
 
         for (block in parseHaxe.blocks) {
 
+            // Skip block if its end line finishes with comment
+            if (block.endsWithComment)
+                continue;
+
             // Compute start line
             var startLine = 0;
             for (i in 0...block.start) {
