@@ -65,7 +65,11 @@ class VscodeHaxeBlocks {
     function isEditingHaxeCode(editor:vscode.TextEditor):Bool {
 
         // Skip anything that is not a haxe file
-        if (!editor.document.uri.path.endsWith('.hx'))
+        if (editor == null
+            || editor.document == null
+            || editor.document.uri == null
+            || editor.document.uri.path == null
+            || !editor.document.uri.path.endsWith('.hx'))
             return false;
 
         return true;
