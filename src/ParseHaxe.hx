@@ -129,7 +129,7 @@ class ParseHaxe {
             else {
                 updateCC();
                 if (BLOCK_KEYWORDS_CC.exists(cc)) {
-                    updateAfter(8);
+                    updateAfter(9);
                     updateWord();
                     
                     if (BLOCK_KEYWORDS.exists(word)) {
