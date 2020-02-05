@@ -40,7 +40,7 @@ class ParseHaxe {
 
     public function new(haxe:String) {
 
-        this.haxe = haxe.replace("\r", '');
+        this.haxe = haxe;
 
     }
 
@@ -75,7 +75,7 @@ class ParseHaxe {
     public function parse():Void {
 
         // Generate cleaned haxe code
-        cleanedHaxe = cleanCode(haxe).replace("\n", ' ');
+        cleanedHaxe = cleanCode(haxe).replace("\n", ' ').replace("\r", ' ');
 
         blocks = [];
         pendingBlocks = new Map();
