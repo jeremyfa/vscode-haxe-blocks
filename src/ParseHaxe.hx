@@ -200,11 +200,85 @@ class ParseHaxe {
                     updateAfter();
                     if (after.ltrim().charAt(0) == '<') {
                         updateC();
-                        while (c != '>'.code) {
+                        var len = haxe.length;
+                        while (c != '>'.code && i < len) {
                             i++;
                             updateC();
                         }
                         i++;
+                    }
+
+                    // Skip arguments
+                    updateAfter();
+                    if (after.ltrim().charAt(0) == '(') {
+                        var parens = 0;
+                        updateC();
+                        var len = haxe.length;
+                        while (i < len) {
+                            i++;
+                            if (c == '('.code) {
+                                parens++;
+                            }
+                            else if (c == ')'.code) {
+                                parens--;
+                                if (parens == 0) {
+                                    updateC();
+                                    break;
+                                }
+                            }
+                            updateC();
+                        }
+                    }
+
+                    // Skip return type
+                    updateAfter();
+                    if (after.ltrim().charAt(0) == ':') {
+                        i++;
+                        updateAfter();
+                        var braces = 0;
+                        var lts = 0;
+                        updateC();
+                        var len = haxe.length;
+                        var prevC = ' '.code;
+                        var startsWithBrace = false;
+                        if (after.ltrim().charAt(0) == '{') {
+                            startsWithBrace = true;
+                        }
+                        while (i < len) {
+                            i++;
+                            if (c == '{'.code) {
+                                if (lts == 0) {
+                                    if (startsWithBrace) {
+                                        startsWithBrace = false;
+                                    }
+                                    else {
+                                        i--;
+                                        updateC();
+                                        break;
+                                    }
+                                }
+                                braces++;
+                            }
+                            else if (c == '}'.code) {
+                                braces--;
+                                if (braces == 0 && lts == 0) {
+                                    updateC();
+                                    break;
+                                }
+                            }
+                            else if (c == '<'.code) {
+                                lts++;
+                            }
+                            else if (c == '>'.code && prevC != '-'.code) {
+                                lts--;
+                                if (braces == 0 && lts == 0) {
+                                    updateC();
+                                    break;
+                                }
+                            }
+                            prevC = c;
+                            updateC();
+                        }
                     }
 
                     break;
