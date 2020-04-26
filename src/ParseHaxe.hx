@@ -287,7 +287,7 @@ class ParseHaxe {
                             updateC();
                         }
                     }
-                    else if (after.ltrim().charAt(0) != '{') {
+                    else if (isFunction && after.ltrim().charAt(0) != '{') {
                         // Function with no body or no braces, nothing to do here after all
                         pendingBlocks.remove(key);
                     }
