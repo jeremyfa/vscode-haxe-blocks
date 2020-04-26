@@ -188,7 +188,9 @@ class ParseHaxe {
             if (word.length > 0) {
                 i += word.length;
                 if (isFunction || !BLOCK_KEYWORDS.exists(word)) {
-                    pendingBlocks.set(blockKey(), {
+                    var key = blockKey();
+
+                    pendingBlocks.set(key, {
                         name: word,
                         start: index,
                         end: -1,
@@ -276,9 +278,18 @@ class ParseHaxe {
                                     break;
                                 }
                             }
+                            else if (c == ';'.code && braces == 0) {
+                                // Function finish without being inside braces, nothing to do here
+                                pendingBlocks.remove(key);
+                                break;
+                            }
                             prevC = c;
                             updateC();
                         }
+                    }
+                    else if (after.ltrim().charAt(0) != '{') {
+                        // Function with no body or no braces, nothing to do here after all
+                        pendingBlocks.remove(key);
                     }
 
                     break;
