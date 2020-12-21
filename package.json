@@ -12,6 +12,8 @@
         "workspaceContains:*.hx",
         "onCommand:haxe-blocks.reload"
     ],
+    "icon": "images/haxe-logo.png",
+    "author": "Jeremy Faivre",
 	"contributes": {
 		"colors": [
 			{
