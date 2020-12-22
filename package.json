@@ -1,19 +1,19 @@
 {
-    "name": "haxe-blocks",
-    "displayName": "Haxe blocks",
-    "description": "An extension to display function block decorations on haxe code",
-    "publisher": "jeremyfa",
-    "license": "MIT",
-    "version": "0.1.0",
-    "engines": {
-        "vscode": "^1.32.0"
-    },
-    "activationEvents": [
-        "workspaceContains:*.hx",
-        "onCommand:haxe-blocks.reload"
-    ],
-    "icon": "images/haxe-logo.png",
-    "author": "Jeremy Faivre",
+	"name": "haxe-blocks",
+	"displayName": "Haxe blocks",
+	"description": "An extension to display function block decorations on haxe code",
+	"publisher": "jeremyfa",
+	"license": "MIT",
+	"version": "0.1.0",
+	"engines": {
+		"vscode": "^1.32.0"
+	},
+	"activationEvents": [
+		"workspaceContains:*.hx",
+		"onCommand:haxe-blocks.reload"
+	],
+	"icon": "images/haxe-logo.png",
+	"author": "Jeremy Faivre",
 	"contributes": {
 		"colors": [
 			{
@@ -27,14 +27,19 @@
 			}
 		]
 	},
-    "bugs": "https://github.com/jeremyfa/vscode-haxe-blocks/issues",
-    "homepage": "https://github.com/jeremyfa/vscode-haxe-blocks/blob/master/README.md",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/jeremyfa/vscode-haxe-blocks.git"
-    },
-    "scripts": {
-        "vscode:prepublish": "haxe build.hxml"
-    },
-    "main": "./vscode-haxe-blocks"
+	"bugs": "https://github.com/jeremyfa/vscode-haxe-blocks/issues",
+	"homepage": "https://github.com/jeremyfa/vscode-haxe-blocks/blob/master/README.md",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jeremyfa/vscode-haxe-blocks.git"
+	},
+	"scripts": {
+		"vscode:prepublish": "haxe build.hxml"
+	},
+	"main": "./vscode-haxe-blocks",
+	"__metadata": {
+		"id": "516910b0-683b-4b22-95f8-fd6eff0d4565",
+		"publisherDisplayName": "Jérémy Faivre",
+		"publisherId": "fb5aba49-1389-4715-8bdc-7b56941284a7"
+	}
 }
