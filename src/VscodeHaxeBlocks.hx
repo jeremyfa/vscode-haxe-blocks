@@ -34,6 +34,10 @@ class VscodeHaxeBlocks {
             rangeBehavior: DecorationRangeBehavior.ClosedClosed
         });
 
+        context.subscriptions.push(Vscode.commands.registerCommand("haxe-blocks.activate", function() {
+            // Nothing to do, extension just needs to be activated
+        }));
+
         bindEditors();
     }
 
@@ -83,8 +87,6 @@ class VscodeHaxeBlocks {
 
         var parseHaxe = new ParseHaxe(code);
         parseHaxe.parse();
-
-        untyped console.log(parseHaxe.blocks);
 
         for (block in parseHaxe.blocks) {
 

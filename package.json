@@ -4,13 +4,13 @@
 	"description": "An extension to display function block decorations on haxe code",
 	"publisher": "jeremyfa",
 	"license": "MIT",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"engines": {
-		"vscode": "^1.32.0"
+		"vscode": "^1.4.0"
 	},
 	"activationEvents": [
-		"workspaceContains:*.hx",
-		"onCommand:haxe-blocks.reload"
+		"workspaceContains:**/*.hx",
+		"onCommand:haxe-blocks.activate"
 	],
 	"icon": "images/haxe-logo.png",
 	"author": "Jeremy Faivre",
@@ -25,7 +25,14 @@
 					"highContrast": "#5C626F"
 				}
 			}
-		]
+		],
+        "commands": [
+            {
+                "title": "Activate haxe blocks",
+                "command": "haxe-blocks.activate",
+                "category": "Haxe blocks"
+            }
+        ]
 	},
 	"bugs": "https://github.com/jeremyfa/vscode-haxe-blocks/issues",
 	"homepage": "https://github.com/jeremyfa/vscode-haxe-blocks/blob/master/README.md",
@@ -39,7 +46,7 @@
 	"main": "./vscode-haxe-blocks",
 	"__metadata": {
 		"id": "516910b0-683b-4b22-95f8-fd6eff0d4565",
-		"publisherDisplayName": "Jérémy Faivre",
-		"publisherId": "fb5aba49-1389-4715-8bdc-7b56941284a7"
+		"publisherId": "fb5aba49-1389-4715-8bdc-7b56941284a7",
+		"publisherDisplayName": "Jérémy Faivre"
 	}
 }
