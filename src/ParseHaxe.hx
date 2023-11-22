@@ -27,7 +27,7 @@ enum abstract BlockKind(String) {
     var ABSTRACT;
 
     var ENUM;
-    
+
     var TYPEDEF;
 
 }
@@ -65,10 +65,6 @@ class ParseHaxe {
     var openBraces:Int = 0;
 
     var openParens:Int = 0;
-
-    var inClassBraces:Int = -1;
-
-    var inEnumBraces:Int = -1;
 
     var pendingBlocks:Map<Int,BlockInfo> = null;
 
@@ -131,8 +127,8 @@ class ParseHaxe {
                 if (BLOCK_KEYWORDS_CC.exists(cc)) {
                     updateAfter(9);
                     updateWord();
-                    
-                    if (BLOCK_KEYWORDS.exists(word)) {
+
+                    if (BLOCK_KEYWORDS.exists(word) && (word != 'abstract' || openBraces == 0)) {
                         consumeBlockName(word);
                     }
                     else {
@@ -344,7 +340,7 @@ class ParseHaxe {
         else if (i == 0 && RE_WORD.match(after)) {
             result = RE_WORD.matched(0);
         }
-        
+
         word = result;
 
     }
@@ -478,7 +474,7 @@ class ParseHaxe {
     ];
 
 /// Regular expressions
-    
+
     static var RE_WORD = ~/^[a-zA-Z0-9_]+/;
 
     static var RE_SEP_WORD = ~/^[^a-zA-Z0-9_]([a-zA-Z0-9_]+)/;
