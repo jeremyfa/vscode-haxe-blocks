@@ -125,7 +125,7 @@ class ParseHaxe {
             else {
                 updateCC();
                 if (BLOCK_KEYWORDS_CC.exists(cc)) {
-                    updateAfter(9);
+                    updateAfter(10);
                     updateWord();
 
                     if (BLOCK_KEYWORDS.exists(word) && (word != 'abstract' || openBraces == 0)) {
