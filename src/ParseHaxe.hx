@@ -71,7 +71,9 @@ class ParseHaxe {
     public function parse():Void {
 
         // Generate cleaned haxe code
-        cleanedHaxe = cleanCode(haxe).replace("\n", ' ').replace("\r", ' ');
+        cleanedHaxe = cleanCode(haxe);
+
+        cleanedHaxe = cleanedHaxe.replace("\n", ' ').replace("\r", ' ');
 
         blocks = [];
         pendingBlocks = new Map();
@@ -362,7 +364,6 @@ class ParseHaxe {
         var i = 0;
         var c = '';
         var cc = '';
-        var after = '';
         var len = code.length;
         var inSingleLineComment = false;
         var inMultiLineComment = false;
@@ -431,17 +432,11 @@ class ParseHaxe {
                 result.add('~/');
                 i += 2;
             }
-            else if (c == '"' || c == '\'') {
-                after = code.substring(i);
-                if (!RE_STRING.match(after)) {
-                    fail('Invalid string', i, code);
-                }
-                result.add(RE_STRING.matched(0).charAt(0));
-                for (i in 0...RE_STRING.matched(0).length-2) {
-                    result.add(' ');
-                }
-                result.add(RE_STRING.matched(0).charAt(0));
-                i += RE_STRING.matched(0).length;
+            else if (c == '"') {
+                i = cleanDoubleQuotedString(i, code, result);
+            }
+            else if (c == '\'') {
+                i = cleanSingleQuotedString(i, code, result);
             }
             else {
                 result.add(c);
@@ -450,6 +445,162 @@ class ParseHaxe {
         }
 
         return result.toString();
+
+    }
+
+    static function cleanAsIsUntil(i:Int, input:String, output:StringBuf, until:Int, allowInterpolation:Bool = false) {
+
+        var openBraces:Int = 0;
+        var openParens:Int = 0;
+        var openBrackets:Int = 0;
+
+        while (i < input.length) {
+
+            var c = input.charCodeAt(i);
+
+            if (openBraces <= 0 && openParens <= 0 && openBrackets <= 0) {
+                if (c == until) {
+                    i++;
+                    break;
+                }
+            }
+
+            if (c == '{'.code) {
+                output.addChar(c);
+                openBraces++;
+                i++;
+            }
+            else if (c == '}'.code) {
+                output.addChar(c);
+                openBraces--;
+                i++;
+            }
+            else if (c == '('.code) {
+                output.addChar(c);
+                openParens++;
+                i++;
+            }
+            else if (c == ')'.code) {
+                output.addChar(c);
+                openParens--;
+                i++;
+            }
+            else if (c == '['.code) {
+                output.addChar(c);
+                openBrackets++;
+                i++;
+            }
+            else if (c == ']'.code) {
+                output.addChar(c);
+                openBrackets--;
+                i++;
+            }
+            else if (c == '"'.code) {
+                i = cleanDoubleQuotedString(i, input, output, allowInterpolation);
+            }
+            else if (c == '\''.code) {
+                i = cleanSingleQuotedString(i, input, output);
+            }
+            else if (c == '\n'.code || c == '\r'.code) {
+                output.addChar(c);
+                i++;
+            }
+            else {
+                output.addChar(' '.code);
+                i++;
+            }
+        }
+
+        return i;
+
+    }
+
+    static function cleanDoubleQuotedString(i:Int, input:String, output:StringBuf, allowInterpolation:Bool = false) {
+
+        output.addChar(allowInterpolation ? ' '.code : '"'.code);
+        i++; // Skip opening quote
+
+        while (i < input.length) {
+
+            var c = input.charCodeAt(i);
+
+            if (c == '\\'.code) {
+                // Handle escape sequences
+                output.addChar(' '.code);
+                i++;
+                if (i < input.length) {
+                    output.addChar(' '.code);
+                    i++;
+                }
+            }
+            else if (allowInterpolation && c == '$'.code && i + 1 < input.length && input.charCodeAt(i + 1) == '{'.code) {
+                // Handle string interpolation
+                output.addChar(' '.code);
+                output.addChar(' '.code);
+                i += 2;
+                i = cleanAsIsUntil(i, input, output, '}'.code) - 1;
+            }
+            else if (c == '"'.code) {
+                // End of string
+                output.addChar(allowInterpolation ? ' '.code : c);
+                i++;
+                break;
+            }
+            else if (c == '\n'.code || c == '\r'.code) {
+                output.addChar(c);
+                i++;
+            }
+            else {
+                output.addChar(' '.code);
+                i++;
+            }
+        }
+
+        return i;
+
+    }
+
+    static function cleanSingleQuotedString(i:Int, input:String, output:StringBuf) {
+
+        output.addChar('\''.code);
+        i++; // Skip opening quote
+
+        while (i < input.length) {
+            var c = input.charCodeAt(i);
+
+            if (c == '\\'.code) {
+                // Handle escape sequences
+                output.addChar(' '.code);
+                i++;
+                if (i < input.length) {
+                    output.addChar(' '.code);
+                    i++;
+                }
+            }
+            else if (c == '$'.code && i + 1 < input.length && input.charCodeAt(i + 1) == '{'.code) {
+                // Handle string interpolation
+                output.addChar(' '.code);
+                output.addChar(' '.code);
+                i += 2;
+                i = cleanAsIsUntil(i, input, output, '}'.code, true) - 1;
+            }
+            else if (c == '\''.code) {
+                // End of string (only if we're not inside interpolation)
+                output.addChar(c);
+                i++;
+                break;
+            }
+            else if (c == '\n'.code || c == '\r'.code) {
+                output.addChar(c);
+                i++;
+            }
+            else {
+                output.addChar(' '.code);
+                i++;
+            }
+        }
+
+        return i;
 
     }
 
